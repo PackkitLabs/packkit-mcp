@@ -1,0 +1,54 @@
+name: Release
+
+# Changesets-driven release for packkit-mcp. On push to main:
+#   • unreleased changesets exist → open/update a "Version Packages" PR
+#     (`changeset version` bumps package.json + CHANGELOG.md, then `sync:mcp`
+#     rewrites server.json to match);
+#   • none remain (that PR merged) → `changeset publish` → npm, then the entry is
+#     pushed to the official MCP registry.
+#
+# npm publish is tokenless via OIDC Trusted Publishing (no NPM_TOKEN, provenance
+# automatic); the MCP registry publish also uses GitHub OIDC (no secrets) and must
+# run AFTER npm, since the registry verifies npm ownership via `mcpName`. Both stay
+# in this repo. Trusted publisher: npmjs.com → packkit-mcp → PackkitJS/packkit-mcp,
+# workflow "release.yml".
+on:
+  push:
+    branches: [main]
+
+concurrency: release-${{ github.ref }}
+
+permissions:
+  contents: write # open the Version Packages PR / push the version bump
+  pull-requests: write # open the Version Packages PR
+  id-token: write # OIDC — npm trusted publishing AND mcp-publisher github-oidc
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@^11.5.1 # OIDC trusted publishing needs npm >= 11.5.1
+      - run: npm ci
+      # action v1.x pairs with @changesets/cli v2 (installed here); action v2 requires CLI v3.
+      - uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        id: changesets
+        with:
+          version: npm run version # changeset version && sync:mcp
+          publish: npm run release # changeset publish (npm, OIDC)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Clients (Glama, Cursor, VS Code…) resolve install commands from the official
+      # registry, so publish the server entry too — only when npm actually published,
+      # since the registry verifies npm ownership via mcpName.
+      - name: Publish to the official MCP registry
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
