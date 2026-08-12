@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.PackkitJS/packkit-mcp",
+  "title": "Packkit",
+  "description": "Scaffold and upgrade modern projects (JS/TS, Python) as a native tool for AI agents.",
+  "version": "0.3.1",
+  "repository": {
+    "url": "https://github.com/PackkitJS/packkit-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "packkit-mcp",
+      "version": "0.3.1",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
