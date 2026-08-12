@@ -93,3 +93,10 @@ subfolder), build steps run from `/app`:
 | CMD arguments | `["node", "server.js"]` |
 | Env vars schema | `{"properties":{},"required":[],"type":"object"}` |
 | Pinned commit SHA | *(empty — tracks latest)* |
+
+Do **not** accept Glama's auto-filled defaults verbatim — they assume `pnpm install`
+and `mcp-proxy -- pnpm run start`. This repo uses **npm**, so use `npm ci --omit=dev`.
+A `start` script (`node server.js`) exists, so `mcp-proxy -- npm run start` also works
+if you prefer the conventional form. If a build fails at *"load metadata for
+debian:trixie-slim … context deadline exceeded"*, that's a transient Docker Hub
+timeout on Glama's side — just retry.

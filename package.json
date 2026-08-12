@@ -38,7 +38,8 @@
     "check": "npm run sync:mcp -- --check && npm run smoke",
     "changeset": "changeset",
     "version": "changeset version && npm run sync:mcp",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "start": "node server.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
