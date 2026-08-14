@@ -46,7 +46,7 @@ language-specific logic.
 
 ```sh
 npm install
-npm run smoke     # boot the server over MCP stdio and exercise both generators
+npm run smoke     # boot the server over MCP stdio and exercise all three generators
 npm run check     # server.json sync check + smoke (what CI runs)
 ```
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Packkit MCP server — fronts EVERY Packkit generator (JavaScript + Python) through
+// Packkit MCP server — fronts EVERY Packkit generator (JavaScript + Python + Go) through
 // the @packkit/core PackkitGenerator protocol, so an agent (Claude Desktop, Cursor,
 // …) scaffolds and upgrades projects in any supported language through one tool set.
 //
@@ -18,6 +18,7 @@ import { createGeneratorRegistry } from '@packkit/core';
 import { writeGeneratedProject } from '@packkit/core/node';
 import { packkitGenerator } from 'create-packkit/embedded';
 import { pythonGenerator } from 'create-packkit-py';
+import { goGenerator } from 'create-packkit-go';
 
 const VERSION = JSON.parse(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'package.json'), 'utf8'),
@@ -28,6 +29,7 @@ const VERSION = JSON.parse(
 const registry = createGeneratorRegistry();
 registry.register(packkitGenerator); // id: "javascript"
 registry.register(pythonGenerator); // id: "python"
+registry.register(goGenerator); // id: "go"
 
 function getGenerator(id) {
   if (!id) throw new Error('A "generator" id is required. Call list_generators for the available ids.');
@@ -78,7 +80,7 @@ const TOOLS = [
   {
     name: 'list_generators',
     description:
-      'START HERE. Lists every Packkit generator (a language target — e.g. javascript, python) with its ' +
+      'START HERE. Lists every Packkit generator (a language target — e.g. javascript, python, go) with its ' +
       'maturity and protocol capabilities. Pick the generator whose language matches what the user wants, ' +
       'then call list_presets and get_generator_schema for it before generating.',
     inputSchema: { type: 'object', properties: {} },
@@ -92,7 +94,7 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        generator: { type: 'string', description: 'Generator id from list_generators (e.g. "javascript", "python")' },
+        generator: { type: 'string', description: 'Generator id from list_generators (e.g. "javascript", "python", "go")' },
         includeExperimental: { type: 'boolean', description: 'Include experimental presets (default false)' },
       },
       required: ['generator'],
