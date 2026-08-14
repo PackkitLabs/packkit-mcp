@@ -10,7 +10,7 @@ name: Release
 # npm publish is tokenless via OIDC Trusted Publishing (no NPM_TOKEN, provenance
 # automatic); the MCP registry publish also uses GitHub OIDC (no secrets) and must
 # run AFTER npm, since the registry verifies npm ownership via `mcpName`. Both stay
-# in this repo. Trusted publisher: npmjs.com → packkit-mcp → PackkitJS/packkit-mcp,
+# in this repo. Trusted publisher: npmjs.com → packkit-mcp → PackkitLabs/packkit-mcp,
 # workflow "release.yml".
 on:
   push:

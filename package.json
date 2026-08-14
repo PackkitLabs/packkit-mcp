@@ -1,7 +1,7 @@
 {
   "name": "packkit-mcp",
   "version": "1.1.0",
-  "mcpName": "io.github.PackkitJS/packkit-mcp",
+  "mcpName": "io.github.PackkitLabs/packkit-mcp",
   "description": "MCP server for Packkit — let AI agents scaffold and upgrade modern projects in any supported language (JS/TS, Python) as a native tool.",
   "type": "module",
   "bin": {
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PackkitJS/packkit-mcp.git"
+    "url": "git+https://github.com/PackkitLabs/packkit-mcp.git"
   },
   "keywords": [
     "mcp",
@@ -31,7 +31,7 @@
   ],
   "author": "DanMat <dannymatthew@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/PackkitJS/packkit-mcp#readme",
+  "homepage": "https://github.com/PackkitLabs/packkit-mcp#readme",
   "scripts": {
     "sync:mcp": "node scripts/sync-mcp-version.mjs",
     "smoke": "node scripts/smoke.mjs",

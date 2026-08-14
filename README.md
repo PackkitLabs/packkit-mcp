@@ -5,11 +5,11 @@
 The **Packkit** [Model Context Protocol](https://modelcontextprotocol.io) server —
 let AI agents (Claude Desktop, Cursor, VS Code, …) scaffold and upgrade modern
 projects as a native tool. It fronts **every** Packkit generator through the
-[`@packkit/core`](https://github.com/PackkitJS/packkit-core) protocol, so the same
+[`@packkit/core`](https://github.com/PackkitLabs/packkit-core) protocol, so the same
 tools work across languages:
 
-- **JavaScript / TypeScript** — [`create-packkit`](https://github.com/PackkitJS/create-packkit-js) (libraries, CLIs, services, SPAs, monorepos)
-- **Python** — [`create-packkit-py`](https://github.com/PackkitJS/create-packkit-py) (libraries, CLIs)
+- **JavaScript / TypeScript** — [`create-packkit`](https://github.com/PackkitLabs/create-packkit-js) (libraries, CLIs, services, SPAs, monorepos)
+- **Python** — [`create-packkit-py`](https://github.com/PackkitLabs/create-packkit-py) (libraries, CLIs)
 
 Adding a language later is one `registry.register(...)` line here — the tools don't change.
 

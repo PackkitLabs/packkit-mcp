@@ -8,8 +8,8 @@ steps fail in non-obvious ways — see [Gotchas](#gotchas).
 | Surface | Identifier | Updated by |
 | --- | --- | --- |
 | **npm** | `packkit-mcp` | `release.yml` — automatic (Changesets + OIDC) |
-| **Official MCP registry** | `io.github.PackkitJS/packkit-mcp` | `release.yml` — automatic |
-| **Glama** | [`PackkitJS/packkit-mcp`](https://glama.ai/mcp/servers/PackkitJS/packkit-mcp) | Admin → **Build & Release** — **manual** |
+| **Official MCP registry** | `io.github.PackkitLabs/packkit-mcp` | `release.yml` — automatic |
+| **Glama** | [`PackkitLabs/packkit-mcp`](https://glama.ai/mcp/servers/PackkitLabs/packkit-mcp) | Admin → **Build & Release** — **manual** |
 | **awesome-mcp-servers** | README entry + Glama score badge | manual |
 
 Clients (Cursor, VS Code, Glama…) resolve the install command from the **official
@@ -31,7 +31,7 @@ and `server.json`'s `name` disagree. `server.js` reads its version from
 ## The release flow
 
 Releases are automated with [Changesets](https://github.com/changesets/changesets)
-(mirroring the other PackkitJS repos):
+(mirroring the other PackkitLabs repos):
 
 1. A change lands with a changeset (`npx changeset`).
 2. On push to `main`, `release.yml` opens/updates a **Version Packages** PR
@@ -63,8 +63,8 @@ mcp-publisher publish
 
 ## Gotchas
 
-1. **The registry namespace is case-sensitive** — `io.github.PackkitJS`, matching
-   the GitHub org's capitalisation. Lowercase → `403 … permission to publish: io.github.PackkitJS/*`.
+1. **The registry namespace is case-sensitive** — `io.github.PackkitLabs`, matching
+   the GitHub org's capitalisation. Lowercase → `403 … permission to publish: io.github.PackkitLabs/*`.
 2. **`mcpName` proves npm ownership**, so it must equal `server.json`'s `name`
    byte-for-byte. A published npm version can't be overwritten — a wrong `mcpName`
    means publishing a *new* version with it corrected.
@@ -75,7 +75,7 @@ mcp-publisher publish
 5. **`npm publish` `E404` usually means auth, not a missing package** — check
    `npm whoami`.
 6. **awesome-mcp-servers requires a *passing* Glama listing** plus the score badge:
-   `[![PackkitJS/packkit-mcp MCP server](https://glama.ai/mcp/servers/PackkitJS/packkit-mcp/badges/score.svg)](https://glama.ai/mcp/servers/PackkitJS/packkit-mcp)`
+   `[![PackkitLabs/packkit-mcp MCP server](https://glama.ai/mcp/servers/PackkitLabs/packkit-mcp/badges/score.svg)](https://glama.ai/mcp/servers/PackkitLabs/packkit-mcp)`
 7. **`glama.json` only carries `maintainers`** — the ownership/claim hook. Name,
    description, and build config live in Glama's admin panel after claiming.
 
