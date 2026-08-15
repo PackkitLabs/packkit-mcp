@@ -9,7 +9,11 @@ projects as a native tool. It fronts **every** Packkit generator through the
 tools work across languages:
 
 - **JavaScript / TypeScript** — [`create-packkit`](https://github.com/PackkitLabs/create-packkit-js) (libraries, CLIs, services, SPAs, monorepos)
-- **Python** — [`create-packkit-py`](https://github.com/PackkitLabs/create-packkit-py) (libraries, CLIs)
+- **Python** — [`create-packkit-py`](https://github.com/PackkitLabs/create-packkit-py) (library, CLI, worker, HTTP service)
+- **Go** — [`create-packkit-go`](https://github.com/PackkitLabs/create-packkit-go) (library, CLI, worker, HTTP service)
+
+It also exposes a `compose_fullstack` tool that stitches a static frontend + a service
+backend from any generators into one fullstack repo (e.g. React + FastAPI).
 
 Adding a language later is one `registry.register(...)` line here — the tools don't change.
 
