@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { createGeneratorRegistry } from '@packkit/core';
+import { createGeneratorRegistry, composeFullstack } from '@packkit/core';
 import { writeGeneratedProject } from '@packkit/core/node';
 import { packkitGenerator } from 'create-packkit/embedded';
 import { pythonGenerator } from 'create-packkit-py';
@@ -151,6 +151,49 @@ const TOOLS = [
       required: ['generator', 'directory', 'name'],
     },
   },
+  {
+    name: 'compose_fullstack',
+    description:
+      'Compose two projects — a static frontend and an HTTP service backend, from ANY generators — into one ' +
+      'fullstack repo (apps/web + apps/server) with a fullstack deployment contract and a docker-compose. ' +
+      'Language-neutral: e.g. a "javascript" react-app frontend + a "python" py-service (or "go" go-service) ' +
+      'backend. By default PREVIEWS; pass write: true to scaffold under <directory>/<name>.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        frontend: {
+          type: 'object',
+          description: 'The static frontend to generate: { generator, name, preset?, config? }',
+          properties: {
+            generator: { type: 'string' },
+            name: { type: 'string' },
+            preset: { type: 'string' },
+            config: { type: 'object' },
+          },
+          required: ['generator', 'name'],
+        },
+        backend: {
+          type: 'object',
+          description: 'The service backend to generate: { generator, name, preset?, config? }',
+          properties: {
+            generator: { type: 'string' },
+            name: { type: 'string' },
+            preset: { type: 'string' },
+            config: { type: 'object' },
+          },
+          required: ['generator', 'name'],
+        },
+        name: { type: 'string', description: 'Repo name (folder when writing; README heading)' },
+        frontendDir: { type: 'string', description: 'Subdir for the frontend (default apps/web)' },
+        backendDir: { type: 'string', description: 'Subdir for the backend (default apps/server)' },
+        dockerCompose: { type: 'boolean', description: 'Emit a root docker-compose.yml (default true)' },
+        write: { type: 'boolean', description: 'Write files to disk (default false = preview only)' },
+        directory: { type: 'string', description: 'Parent directory to create <name>/ in when writing' },
+        force: { type: 'boolean', description: 'Overwrite colliding existing files when writing' },
+      },
+      required: ['frontend', 'backend', 'name'],
+    },
+  },
 ];
 
 // --- server -----------------------------------------------------------------
@@ -224,6 +267,53 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
       const definition = g.exportDefinition(fresh);
       const plan = g.upgradeProject({ definition, currentFiles });
       return json(plan);
+    }
+
+    if (name === 'compose_fullstack') {
+      const { frontend, backend } = args;
+      if (!frontend?.generator || !frontend?.name) return fail('frontend { generator, name } is required.');
+      if (!backend?.generator || !backend?.name) return fail('backend { generator, name } is required.');
+
+      const feProject = getGenerator(frontend.generator).createProject({
+        preset: frontend.preset,
+        name: frontend.name,
+        config: frontend.config,
+      });
+      const beProject = getGenerator(backend.generator).createProject({
+        preset: backend.preset,
+        name: backend.name,
+        config: backend.config,
+      });
+
+      // composeFullstack itself enforces static-frontend / service-backend and throws
+      // a typed error otherwise, surfaced by the catch below.
+      const { project } = composeFullstack({
+        frontend: feProject,
+        backend: beProject,
+        options: {
+          name: args.name,
+          frontendDir: args.frontendDir,
+          backendDir: args.backendDir,
+          dockerCompose: args.dockerCompose,
+        },
+      });
+      const summary = {
+        composedFrom: project.metadata.composedFrom,
+        deploymentContract: project.deploymentContract,
+        fileCount: Object.keys(project.files).length,
+      };
+
+      if (!args.write) {
+        return text(`Preview — fullstack/${args.name} (${Object.keys(project.files).length} files, not written):\n${fileTree(project.files)}\n\n${JSON.stringify(summary, null, 2)}`);
+      }
+      const parent = args.directory ? resolve(args.directory) : process.cwd();
+      const targetDir = join(parent, args.name);
+      const { written, skipped } = writeGeneratedProject(targetDir, project.files, { force: !!args.force });
+      return text(
+        `Created ${args.name} (fullstack) at ${targetDir}\n${written.length} files written` +
+          (skipped.length ? `, ${skipped.length} kept (existing): ${skipped.join(', ')}` : '') +
+          `\n\n${JSON.stringify(summary, null, 2)}`,
+      );
     }
 
     return fail(`Unknown tool: ${name}`);

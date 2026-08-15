@@ -28,8 +28,8 @@ try {
   const names = tools.map((t) => t.name).sort();
   assert(
     JSON.stringify(names) ===
-      JSON.stringify(['generate_project', 'get_generator_schema', 'list_generators', 'list_presets', 'plan_upgrade']),
-    `exposes the 5 protocol tools (${names.join(', ')})`,
+      JSON.stringify(['compose_fullstack', 'generate_project', 'get_generator_schema', 'list_generators', 'list_presets', 'plan_upgrade']),
+    `exposes the 6 protocol tools (${names.join(', ')})`,
   );
 
   const gens = textOf(await client.callTool({ name: 'list_generators', arguments: {} }));
@@ -61,6 +61,23 @@ try {
   // Go runtime — the multi-generator server driving all three languages by id alone.
   const go = textOf(await client.callTool({ name: 'generate_project', arguments: { generator: 'go', name: 'demo-go', preset: 'go-service' } }));
   assert(go.includes('go.mod') && go.includes('"type": "service"') && go.includes('"runtime": "go-'), 'go generate_project previews files + service contract');
+
+  // Cross-language composition: a JavaScript React SPA frontend + a Python FastAPI
+  // backend stitched into one fullstack repo by id alone — the composer never learns
+  // the languages, it just reads the static + service contracts.
+  const fs = textOf(
+    await client.callTool({
+      name: 'compose_fullstack',
+      arguments: {
+        name: 'demo-fs',
+        frontend: { generator: 'javascript', name: 'web', preset: 'react-app' },
+        backend: { generator: 'python', name: 'api', preset: 'py-service' },
+      },
+    }),
+  );
+  assert(fs.includes('apps/web/') && fs.includes('apps/server/'), 'compose_fullstack merges apps/web + apps/server');
+  assert(fs.includes('docker-compose.yml'), 'compose_fullstack emits a docker-compose');
+  assert(fs.includes('"type": "fullstack"') && fs.includes('"backend"') && fs.includes('"runtime": "python-'), 'compose_fullstack previews a fullstack contract with a python backend');
 
   console.log('\nsmoke: PASS');
 } finally {
