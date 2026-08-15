@@ -1,6 +1,6 @@
 {
   "name": "packkit-mcp",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "mcpName": "io.github.PackkitLabs/packkit-mcp",
   "description": "MCP server for Packkit — let AI agents scaffold and upgrade modern projects in any supported language (JS/TS, Python) as a native tool.",
   "type": "module",
