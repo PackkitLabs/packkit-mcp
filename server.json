@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "io.github.PackkitLabs/packkit-mcp",
   "title": "Packkit",
-  "description": "Scaffold and upgrade modern projects (JS/TS, Python) as a native tool for AI agents.",
+  "description": "Scaffold, compose, and upgrade modern multi-language projects as a native tool for AI agents.",
   "version": "1.2.0",
   "repository": {
     "url": "https://github.com/PackkitLabs/packkit-mcp",
