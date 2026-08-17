@@ -3,7 +3,7 @@
   "name": "io.github.PackkitLabs/packkit-mcp",
   "title": "Packkit",
   "description": "Scaffold, compose, and upgrade modern multi-language projects as a native tool for AI agents.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "repository": {
     "url": "https://github.com/PackkitLabs/packkit-mcp",
     "source": "github"
@@ -13,7 +13,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "packkit-mcp",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
