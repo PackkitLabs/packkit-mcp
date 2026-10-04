@@ -1,6 +1,7 @@
 # packkit-mcp
 
 [![npm](https://img.shields.io/npm/v/packkit-mcp)](https://www.npmjs.com/package/packkit-mcp)
+[![M8ven Score](https://m8ven.ai/badge/mcp/packkitlabs/packkit-mcp)](https://m8ven.ai/mcp/packkitlabs/packkit-mcp?s=readme)
 
 The **Packkit** [Model Context Protocol](https://modelcontextprotocol.io) server —
 let AI agents (Claude Desktop, Cursor, VS Code, …) scaffold and upgrade modern
